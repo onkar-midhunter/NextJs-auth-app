@@ -41,7 +41,7 @@ export default function LoginPage() {
     try {
       setForgotLoading(true);
 
-      await axios.patch("/api/user/forgotPassword", {
+      await axios.post("/api/user/forgotPassword", {
         email: user.email,
       });
 
