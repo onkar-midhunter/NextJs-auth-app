@@ -10,7 +10,7 @@ connect();
 // first 
 
 
-export async function PATCH(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
     const reqBody = await request.json();
     const { email } = reqBody;
