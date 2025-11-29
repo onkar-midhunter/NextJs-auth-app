@@ -16,21 +16,25 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [forgotLoading, setForgotLoading] = useState(false);
   const [isEmailSent, setIsEmailSent] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [buttonDisabled, setButtonDisabled] = useState(true);
 
   // MAIN LOGIN FUNCTION
   const onLogin = async () => {
+    setErrorMessage(""); // clear old error
+
     try {
       setLoading(true);
 
       const response = await axios.post("/api/user/login", user);
-      toast.success("Login Successful");
-
       router.push("/profile");
     } catch (error: any) {
-      const msg = error.response?.data?.error || "Login failed";
-      toast.error(msg);
+      if (axios.isAxiosError(error)) {
+        setErrorMessage(error.response?.data?.error || "Something went wrong");
+      } else {
+        setErrorMessage("Unexpected error occurred");
+      }
     } finally {
       setLoading(false);
     }
@@ -48,8 +52,7 @@ export default function LoginPage() {
       setIsEmailSent(true);
       toast.success("Password reset email sent");
     } catch (error: any) {
-      const msg =
-        error.response?.data?.error || "Something went wrong";
+      const msg = error.response?.data?.error || "Something went wrong";
       toast.error(msg);
     } finally {
       setForgotLoading(false);
@@ -67,7 +70,11 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-950 px-4">
       <div className="bg-gray-900 border border-gray-800 shadow-xl rounded-2xl p-8 w-full max-w-md">
-
+        {errorMessage && (
+          <p className="text-red-400 text-sm mb-3 text-center">
+            {errorMessage}
+          </p>
+        )}
         <h1 className="text-3xl font-bold text-white text-center mb-6">
           {loading ? "Processing..." : "Login"}
         </h1>
