@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
   try {
     const reqBody = await request.json();
     const { email } = reqBody;
-
+    const origin = request.headers.get("origin") || process.env.DOMAIN;
     console.log(reqBody);
     const user = await User.findOne({ email });
     if (!user) {
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     
 
     //send verification Email
-    await sendEmail({email,emailType:"RESET",userId:user._id})
+    await sendEmail({email,emailType:"RESET",userId:user._id,origin})
 
     return NextResponse.json({
       message: "Password reset link sent to email",
